@@ -1,0 +1,21 @@
+---
+- name: Launch Cloud-1 42's project
+  hosts: all
+  remote_user: root
+
+  roles:
+    - role: install
+      tags:
+        - install 
+        - setup
+    - role: docker
+      tags:
+        - docker
+        - setup
+    - role: network
+      tags:
+        - network
+        - setup
+    - role: nginx
+      tags:
+        - nginx 

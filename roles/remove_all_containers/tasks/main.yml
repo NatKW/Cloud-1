@@ -1,0 +1,21 @@
+---
+- name: Remove tmp Files
+  file:
+     path: '/tmp/{{ item }}'
+     state: absent
+  with_items:
+      - 'nginx'
+      - 'mariadb'
+      - 'wordpress'
+      - 'phpma'
+
+- name: Prune everything (including non-dangling images)
+  community.docker.docker_prune:
+    containers: yes
+    images: yes
+    images_filters:
+      dangling: false
+    networks: yes
+    volumes: yes
+    builder_cache: yes
+...

@@ -1,0 +1,51 @@
+user                    nobody nogroup;
+worker_processes        auto;
+error_log			    /var/log/nginx/error.log warn;
+pid                     /var/run/nginx/nginx.pid;
+
+events {
+	worker_connections  1024;
+}
+
+http {
+
+	sendfile            on;
+	tcp_nopush          on;
+	tcp_nodelay         on;
+	keepalive_timeout   65;
+	types_hash_max_size 2048;
+	gzip                on;
+
+	include             /etc/nginx/mime.types;
+	default_type        application/octet-stream;
+
+	access_log          /var/log/nginx/access.log;
+	error_log           /var/log/nginx/error.log;
+
+	ssl_certificate 	/etc/nginx/ssl/nade-la-.42.fr.crt;
+	ssl_certificate_key	/etc/nginx/ssl/nade-la-.42.fr.key;
+	ssl_protocols TLSv1.2 TLSv1.3;
+
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+    ssl_prefer_server_ciphers on;
+
+    ssl_session_timeout 5m;
+
+
+    server {
+        listen             443 ssl;
+        listen             [::]:443 ssl;
+        server_name        {{ DOMAIN }};
+     
+        root               /var/www/html;
+        index              index.html index.php;
+     
+        access_log         /var/log/nginx/website.log;
+        error_log          /var/log/nginx/website.log;
+     
+        location / {
+            autoindex      on;
+            try_files      $uri $uri/ =404;
+        }    
+    }
+}
