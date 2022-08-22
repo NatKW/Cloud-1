@@ -16,6 +16,9 @@
       tags:
         - network
         - setup
-    - role: nginx
+    - role: server
       tags:
-        - nginx 
+        - server
+    - role: database
+      tags:
+        - db
