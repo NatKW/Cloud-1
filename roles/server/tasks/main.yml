@@ -22,7 +22,7 @@
   community.docker.docker_container:
     name: my_nginx
     image: my_nginx:my_img
-    state: started
+    restart_policy: always
     ports:
       - "443:443"
     volumes:
@@ -30,4 +30,3 @@
       #- phpma_data:/var/www/phpmyadmin
     networks:
       - name: inception_network
-  notify: nginx reload

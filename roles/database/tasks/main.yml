@@ -1,8 +1,10 @@
 ---
 - name: Copy entrypoint file
-  template:
-    src: ./roles/database/templates/configure.sh
-    dest: /tmp/mariadb/configure.sh
+  ansible.builtin.copy:
+    src: ./roles/database/templates/
+    dest: /tmp/mariadb
+    owner: root
+    group: root
     mode: '0755'
 
 - name: Build Mariadb image from dockerfile
@@ -25,6 +27,6 @@
       MARIADB_USER: "{{ MARIADB_USER }}"
       MARIADB_PASSWORD: "{{ MARIADB_PASSWORD }}"
     volumes:
-      - database:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - name: inception_network
