@@ -14,13 +14,14 @@
     source: build
     build:
       path: /tmp/mariadb/
+      
 
 - name: Run mariadb container
   community.docker.docker_container:
     name: mariadb
     image: mariadb:my_img
     state: started
-    restart_policy: always
+    tty: true
     env:
       MARIADB_ROOT_PASSWORD: "{{ MARIADB_ROOT_PASSWORD }}"
       MARIADB_DATABASE: "{{ MARIADB_DATABASE }}"
