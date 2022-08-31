@@ -2,6 +2,9 @@
 - name: Launch Cloud-1 42's project
   hosts: all
   remote_user: root
+  vars_files:
+    - group_vars/all
+    - group_vars/vault
 
   roles:
     - role: install
@@ -11,14 +14,19 @@
     - role: docker
       tags:
         - docker
-        - setup
     - role: network
       tags:
         - network
         - setup
-    - role: server
-      tags:
-        - server
     - role: database
       tags:
         - db
+    - role: phpma
+      tags:
+        - phpma
+    - role: wordpress
+      tags:
+        - wp    
+    - role: server
+      tags:
+        - nginx        

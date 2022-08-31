@@ -8,4 +8,4 @@ RUN chmod 755 /configure.sh
 
 EXPOSE 3306
 
-ENTRYPOINT ["sh", "configure.sh"]
+ENTRYPOINT ["sh", "./configure.sh"]

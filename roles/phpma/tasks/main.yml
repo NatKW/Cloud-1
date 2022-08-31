@@ -1,0 +1,31 @@
+- name: copy index.php
+  ansible.builtin.copy: 
+    src: ./roles/phpma/templates/
+    dest: /tmp/phpma
+    mode: '644'
+
+- name: Build phpMyAdmin image from Dockerfile
+  community.docker.docker_image:
+    name: phpma
+    tag: my_img
+    source: build
+    build:
+      path: /tmp/phpma
+
+- name: Run phpMyAdmin Container
+  community.docker.docker_container:
+    name: phpma
+    image: phpma:my_img
+    restart_policy: always
+    links:
+      - mariadb
+    exposed_ports:
+      - "9001:9001"
+    volumes:
+      - phpma_data:/var/www/phpmyadmin
+    env:
+      PMA_HOST: '{{ MARIADB_DATABASE }}'
+      PMA_USER: root
+      PMA_PASSWORD: '{{ MARIADB_ROOT_PASSWORD }}'
+    networks:
+      - name: inception_network

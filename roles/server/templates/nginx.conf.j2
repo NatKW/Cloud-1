@@ -1,6 +1,5 @@
-user                    nobody nogroup;
+user                    nginx nginx;
 worker_processes        auto;
-error_log			    /var/log/nginx/error.log warn;
 pid                     /var/run/nginx/nginx.pid;
 
 events {
@@ -19,10 +18,9 @@ http {
 	include             /etc/nginx/mime.types;
 	default_type        application/octet-stream;
 
-	access_log          /var/log/nginx/access.log;
-	error_log           /var/log/nginx/error.log;
+	#access_log          /var/log/nginx/access.log;
+	#error_log           /var/log/nginx/error.log;
 
-	ssl on;
     ssl_certificate 	/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.crt;
 	ssl_certificate_key	/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.key;
 	ssl_protocols TLSv1.2 TLSv1.3;
@@ -30,8 +28,7 @@ http {
     ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
     ssl_prefer_server_ciphers on;
 
-    ssl_session_timeout 5m;
-
+    #ssl_session_timeout 5m;
 
     server {
         listen             443 ssl;
@@ -39,14 +36,52 @@ http {
         server_name        "{{ DOMAIN }}";
      
         root               /var/www/html;
-        index              index.html index.php;
+        index              index.php index.html;
      
-        access_log         /var/log/nginx/website.log;
-        error_log          /var/log/nginx/website.log;
+        #access_log         /var/log/nginx/website.log;
+        #error_log          /var/log/nginx/website.log;
      
         location / {
             autoindex      on;
             try_files      $uri $uri/ =404;
         }    
+    
+#        location ~ \.php$ { 
+#		    try_files $uri =404;
+	#	    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+	#	    fastcgi_pass wordpress:9000;
+	#	    root	/var/www/html/;
+	#	    fastcgi_index index.php;
+	#	    include fastcgi_params;
+	#	    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	#	    fastcgi_param PATH_INFO $fastcgi_path_info;
+    #    }
+   }
+    
+    server {
+        listen             443 ssl;
+        listen             [::]:443 ssl;
+        server_name        phpmyadmin.{{ DOMAIN }};
+     
+        root               /var/www/phpmyadmin;
+        index              index.php;
+
+        access_log         /var/log/nginx/phpmyadmin.log;
+        error_log          /var/log/nginx/phpmyadmin.log;
+
+        location / {
+            try_files      $uri $uri/ /index.php?$args;
+        }    
+    
+        location ~ \.php$ {
+            try_files $uri =404;
+		    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		    fastcgi_pass phpmyadmin:9001;
+		    fastcgi_index index.php;
+		    include fastcgi_params;
+		    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		    fastcgi_param PATH_INFO $fastcgi_path_info;
+	    }
     }
+
 }
