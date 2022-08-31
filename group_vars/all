@@ -12,3 +12,4 @@ WP_EMAIL: "nath.burgade@gmail.com"
 MARIADB_ROOT_PASSWORD: '{{ lookup("vault", "MARIADB_ROOT_PASSWORD") }}'
 MARIADB_PASSWORD: '{{ lookup("vault", "MARIADB_PASSWORD") }}'    
 WORDPRESS_DB_ADMIN_PWD: '{{ lookup("vault", "WORDPRESS_DB_ADMIN_PWD") }}'
+WP_PWD: '{{ lookup("vault", "WP_PWD") }}' 

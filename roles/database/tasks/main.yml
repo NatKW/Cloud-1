@@ -14,7 +14,6 @@
     source: build
     build:
       path: /tmp/mariadb/
-      
 
 - name: Run mariadb container
   community.docker.docker_container:

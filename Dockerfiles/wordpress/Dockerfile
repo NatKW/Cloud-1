@@ -1,29 +1,30 @@
 FROM	alpine:3.15
-RUN	apk update && apk upgrade && apk add --no-cache \
-	mariadb-client \
-	wget \
-	tar \
-	vim \
-	php7 php7-cli php7-fpm php7-json \
-	php7-common php7-mysqli php7-zip \
-	php7-gd php7-mbstring php7-xml php-phar\
-	php7-xml php7-pear php7-openssl php7-bcmath 
+RUN		apk update && apk upgrade && apk add --no-cache \
+		mariadb-client \
+		wget \
+		vim \
+RUN 	echo "http://dl-cdn.alpinelinux.org/alpine/v3.15/main" >> /etc/apk/repositories \
+    	&& apk add --no-cache php7 php7-fpm php7-opcache \
+		php7-cli php7-gd php7-mysqli
+	
+RUN	rm -rf /var/lib/apt/lists/*
 
 # Php config
-RUN	adduser -S nginx &&	addgroup -S nginx
-COPY	tools/php-fpm.conf /etc/php7/php-fpm.conf
-COPY	tools/www.conf /etc/php7/php-fpm.d/www.conf
+RUN 	mkdir /run/php
+RUN 	sed '/^listen =/s/\/run\/php\/php7.4-fpm.sock/9000/' -i /etc/php/7.4/fpm/pool.d/www.conf
+RUN		adduser -S nginx &&	addgroup -S nginx
+
 RUN     mkdir -p /var/www/html/
 RUN 	chmod 777 /var/www/html/
 
 #Download and Setup Worpress-cli https://wp-cli.org/fr/
 RUN 	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN	php wp-cli.phar --info
+RUN		php wp-cli.phar --info
 RUN 	chmod +x wp-cli.phar
-RUN	mv wp-cli.phar /usr/bin/wp
-RUN	chown -R nginx:nginx /usr/bin/wp
+RUN		mv wp-cli.phar /usr/bin/wp
+RUN		chown -R nginx:nginx /usr/bin/wp /var/www/html/
 
 WORKDIR /var/www/html/
-COPY tools/configure.sh /tmp/configure.sh
+COPY /start.sh /start.sh
 
-ENTRYPOINT [ "sh", "/tmp/configure.sh" ]
+ENTRYPOINT [ "sh", "/start.sh" ]

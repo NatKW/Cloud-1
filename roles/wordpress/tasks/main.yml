@@ -19,6 +19,19 @@
     restart_policy: always
     exposed_ports:
       - "9000:9000"
+    env:
+      WORDPRESS_DB_HOST: mariadb
+      MARIADB_DATABASE: "{{ MARIADB_DATABASE }}"
+      MARIADB_USER: "{{ MARIADB_USER }}"
+      MARIADB_PASSWORD: "{{ MARIADB_PASSWORD }}"
+      WORDPRESS_DB_TITLE: "{{ WORDPRESS_DB_TITLE }}"
+      WORDPRESS_DB_ADMIN_EMAIL: "{{ WORDPRESS_DB_ADMIN_EMAIL }}"
+      WORDPRESS_DB_ADMIN_PWD: "{{ WORDPRESS_DB_ADMIN_PWD }}"
+      WORDPRESS_DB_ADMIN: "{{ WORDPRESS_DB_ADMIN }}"
+      DOMAIN: "{{ DOMAIN }}"
+      WP_USER: "{{ WP_USER }}"
+      WP_PWD: "{{ WP_PWD }}"
+      WP_EMAIL: "{{ WP_EMAIL }}"
     volumes:
       - web_data:/var/www/html
     networks:
