@@ -1,14 +1,19 @@
 ---
 - name: Update Nginx configuration
-  template:
+  ansible.builtin.copy:
     src: ./roles/server/templates/nginx.conf.j2
     dest: /tmp/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0755
 
 - name: copy index.html
-  template: 
+  ansible.builtin.copy: 
     src: ./roles/server/templates/index.html.j2 
     dest: /tmp/nginx/index.html
-    mode: 0644
+    owner: root
+    group: root
+    mode: 0755
 
 - name: Build Nginx image from Dockerfile
   community.docker.docker_image:

@@ -21,12 +21,12 @@
     - role: database
       tags:
         - db
-    - role: phpma
-      tags:
-        - phpma
     - role: wordpress
       tags:
-        - wp    
+        - wp   
+    - role: phpma
+      tags:
+        - phpma   
     - role: server
       tags:
-        - nginx        
+        - nginx

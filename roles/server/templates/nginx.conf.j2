@@ -1,87 +1,44 @@
-user                    nginx nginx;
-worker_processes        auto;
-pid                     /var/run/nginx/nginx.pid;
-
-events {
-	worker_connections  1024;
-}
+events {}
 
 http {
+	server {
+		listen 80;
+		listen [::]:80;
+		server_name "{{ DOMAIN }}";
+	
+	# HTTP to HTTPS redirections for all the subdomains
+		return 301 https://$host$request_uri;
+	}
 
-	sendfile            on;
-	tcp_nopush          on;
-	tcp_nodelay         on;
-	keepalive_timeout   65;
-	types_hash_max_size 2048;
-	gzip                on;
+	server {
+		listen	443 ssl;
+		listen [::]:443 ssl;
+		server_name	"{{ DOMAIN }}";
 
-	include             /etc/nginx/mime.types;
-	default_type        application/octet-stream;
+		ssl_certificate		/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.crt;
+		ssl_certificate_key	/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.key;
+		ssl_protocols TLSv1.2 TLSv1.3;
 
-	#access_log          /var/log/nginx/access.log;
-	#error_log           /var/log/nginx/error.log;
+	    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+	    ssl_prefer_server_ciphers on;
 
-    ssl_certificate 	/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.crt;
-	ssl_certificate_key	/etc/nginx/ssl/cloud-one-nade-la.duckdns.org.key;
-	ssl_protocols TLSv1.2 TLSv1.3;
+		root	/var/www/html;
+		index index.html index.htm index.php;
 
-    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
-    ssl_prefer_server_ciphers on;
-
-    #ssl_session_timeout 5m;
-
-    server {
-        listen             443 ssl;
-        listen             [::]:443 ssl;
-        server_name        "{{ DOMAIN }}";
-     
-        root               /var/www/html;
-        index              index.php index.html;
-     
-        #access_log         /var/log/nginx/website.log;
-        #error_log          /var/log/nginx/website.log;
-     
-        location / {
-            autoindex      on;
-            try_files      $uri $uri/ =404;
-        }    
-    
-        location ~ \.php$ { 
-		    try_files $uri =404;
-		    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-		    fastcgi_pass wordpress:9000;
-		    root	/var/www/html/;
-		    fastcgi_index index.php;
-		    include fastcgi_params;
-		    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		    fastcgi_param PATH_INFO $fastcgi_path_info;
-        }
-   }
-    
-    server {
-        listen             443 ssl;
-        listen             [::]:443 ssl;
-        server_name        phpmyadmin.{{ DOMAIN }};
-     
-        root               /var/www/phpmyadmin;
-        index              index.php;
-
-        access_log         /var/log/nginx/phpmyadmin.log;
-        error_log          /var/log/nginx/phpmyadmin.log;
-
-        location / {
-            try_files      $uri $uri/ /index.php?$args;
-        }    
-    
-        location ~ \.php$ {
-            try_files $uri =404;
-		    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-		    fastcgi_pass phpmyadmin:9001;
-		    fastcgi_index index.php;
-		    include fastcgi_params;
-		    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		    fastcgi_param PATH_INFO $fastcgi_path_info;
-	    }
-    }
-
-}
+		location / {
+			autoindex on;
+			try_files $uri $uri/ =404;
+		}
+	
+		location ~ [^/]\.php(/|$) { 
+			try_files $uri =404;
+			fastcgi_split_path_info ^(.+\.php)(/.+)$;
+			fastcgi_pass wordpress:9000;
+			root	/var/www/html;
+			fastcgi_index index.php;
+			include fastcgi_params;
+			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_param PATH_INFO $fastcgi_path_info;
+		}
+	}
+}	

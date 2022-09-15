@@ -1,8 +1,12 @@
 ---
-- name: Copy Wordpress script to remote host
-  template:
-    src: ./roles/wordpress/templates/start.sh
-    dest: /tmp/wordpress/start.sh
+- name: Copy Wordpress config files to remote host
+  ansible.builtin.copy:
+    src: ./roles/wordpress/templates/
+    dest: /tmp/wordpress/
+    owner: root
+    group: root
+    mode: 0644
+
 
 - name: Build Worpress image from Dockerfile
   community.docker.docker_image:

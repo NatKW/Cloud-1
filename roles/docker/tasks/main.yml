@@ -21,14 +21,6 @@
       o: bind
       device: /root/data/html
 
-- name: Create a volume for nginx and phpmyadmin
-  docker_volume:
-    name: phpma_data
-    driver_options:
-      type: none
-      o: bind
-      device: root/data/phpmyadmin
-
 - name: Create database volume
   docker_volume:
     name: db_data
@@ -36,6 +28,14 @@
       type: none
       o: bind
       device: root/data/database
+
+- name: Create a volume for nginx and phpmyadmin
+  community.docker.docker_volume:
+    name: phpma_data
+    driver_options:
+      type: none
+      o: bind
+      device: /root/data/phpmyadmin
 
 - name: Copy Dockerfiles
   copy:

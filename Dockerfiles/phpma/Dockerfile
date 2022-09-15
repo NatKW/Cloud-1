@@ -15,19 +15,19 @@ RUN wget https://files.phpmyadmin.net/phpMyAdmin/5.2.0/phpMyAdmin-5.2.0-english.
 RUN tar -xvzf /tmp/phpMyAdmin.tar.gz -C /tmp
 RUN mkdir -p /var/www/phpmyadmin
 RUN mkdir /var/www/phpmyadmin/tmp && chmod 0777 /var/www/phpmyadmin/tmp
-RUN cp -R /tmp/phpMyAdmin-5.2.0-english/* /var/www/phpmyadmin
-RUN cp /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php \
-	&& chmod +x /var/www/phpmyadmin/config.inc.php
-RUN sed -i 's/localhost/'{{WORDPRESS_DB_HOST}}'/g' /var/www/phpmyadmin/config.inc.php
+RUN cp -r /tmp/phpMyAdmin-5.2.0-english/* /var/www/phpmyadmin
+
+COPY ./config.inc.php /var/www/phpmyadmin/config.inc.php
 RUN	echo "\$cfg['blowfish_secret'] = '$(openssl rand -base64 32)';" >> /var/www/phpmyadmin/config.inc.php
-RUN	echo "\$cfg['Servers'][$i]['user'] = 'root';" >> /var/www/phpmyadmin/config.inc.php
-RUN echo "\$cfg['Servers'][$i]['password'] = 'MARIADB_ROOT_PASSWORD';" >> /var/www/phpmyadmin/config.inc.php
-RUN	echo "\$cfg['Servers'][$i]['extension'] = 'mysqli';" >> /var/www/phpmyadmin/config.inc.php
-RUN sed -i 's/listen = \/run\/php7\/php-fpm7.sock/listen = 9001/g' /etc/php7/php-fpm.d/www.conf
+
+RUN sed -i 's/listen = \/run\/php\/php7.4-fpm.sock/listen = 9001/g' /etc/php7/php-fpm.d/www.conf
 RUN mkdir /run/php/
-RUN chown -R nginx:nginx /var/www/phpmyadmin /run/php
-COPY ./index.php /var/www/phpmyadmin/index.php
+RUN touch /var/log/php7/error.log \
+	&& chmod a+rwx /var/log/php7/error.log
+RUN chown -R nginx:nginx /var/www/phpmyadmin /run/php /var/log/php7/error.log
 
+USER nginx
 
+EXPOSE 9001
 
 ENTRYPOINT [ "php-fpm7", "--nodaemonize" ]

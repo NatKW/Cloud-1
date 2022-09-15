@@ -16,6 +16,7 @@
     port: '{{ item }}'
     proto: tcp
   loop:
+    - '80'
     - 'ssh'
     - '9000'
     - '9001'
