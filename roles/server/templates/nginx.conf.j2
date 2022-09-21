@@ -39,6 +39,21 @@ http {
 			include fastcgi_params;
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_param PATH_INFO $fastcgi_path_info;
-		}
+		}	
 	}
-}	
+	server {
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        server_name phpmyadmin.{{ DOMAIN }};
+     
+        root /var/www/html/phpmyadmin;
+        index index.php;
+     
+        access_log /var/log/nginx/phpmyadmin.log;
+        error_log /var/log/nginx/phpmyadmin.log;
+
+        location / {
+            try_files $uri $uri/ /index.php?$args;
+        }
+    }
+}

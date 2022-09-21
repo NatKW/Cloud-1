@@ -7,13 +7,13 @@
     group: root
     mode: 0755
 
-- name: copy index.html
-  ansible.builtin.copy: 
-    src: ./roles/server/templates/index.html.j2 
-    dest: /tmp/nginx/index.html
-    owner: root
-    group: root
-    mode: 0755
+#- name: copy index.html
+#  ansible.builtin.copy: 
+#    src: ./roles/server/templates/index.html.j2 
+#    dest: /tmp/nginx/index.html
+#    owner: root
+#    group: root
+#    mode: 0755
 
 - name: Build Nginx image from Dockerfile
   community.docker.docker_image:
@@ -32,6 +32,5 @@
       - "443:443"
     volumes:
       - web_data:/var/www/html
-      - phpma_data:/var/www/phpmyadmin
     networks:
       - name: inception_network

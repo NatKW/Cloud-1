@@ -1,0 +1,14 @@
+---
+- name: remove volume on remote server
+  shell: rm -rf data
+
+- name: Remove docker volume db
+  docker_volume:
+    name: db_data
+    state: absent
+
+- name: Remove docker volume web
+  docker_volume:
+    name: web_data
+    state: absent
+...

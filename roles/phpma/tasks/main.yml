@@ -8,7 +8,7 @@
     mode: 0666
   with_items:
     - { src: config.inc.php.j2, dest: config.inc.php }
-    - { src: index.php, dest: index.php }
+    #- { src: index.php, dest: index.php }
 
 - name: Build phpMyAdmin image from Dockerfile
   community.docker.docker_image:
@@ -25,9 +25,10 @@
     restart_policy: always
     env:
       PMA_HOST: '{{ MARIADB_DATABASE }}'
-      PMA_USER: root
-      PMA_PASSWORD: '{{ MARIADB_ROOT_PASSWORD }}'
-    volumes:
-      - phpma_data:/var/www/phpmyadmin
+      PMA_USER: '{ MARIADB_USER }'
+      PMA_PASSWORD: '{{ MARIADB_PASSWORD }}'
+    ports:
+      - "8888:8888"
     networks:
-      - name: inception_network  
+      - name: inception_network 
+        links: '{{ MARIADB_DATABASE }}' 
