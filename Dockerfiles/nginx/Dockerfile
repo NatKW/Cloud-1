@@ -1,7 +1,5 @@
 FROM alpine:3.15
 
-ARG DOMAIN
-
 RUN apk update && apk upgrade && apk add --no-cache nginx \
     openssl
 RUN rm -rf /var/cache/apk/*
@@ -14,8 +12,9 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
         -subj "/C=Fr/ST=IledeFrance/L=Paris/O=42 School/CN=cloud-one-nade-la.duckdns.org"
 
 # configurer nginx
-RUN mkdir -p /var/www/html
-#COPY ./index.html /var/www/html/index.html
+RUN mkdir -p /var/www/phpmyadmin
+RUN mkdir -p /var/www/html /var/www/html
+RUN ln -s /var/www/phpmyadmin 
 RUN  rm /etc/nginx/http.d/default.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 

@@ -1,11 +1,4 @@
 ---
-#virtualmachines:
-#  vars:
-#    ansible_python_interpreter: "/usr/bin/python3.8"
-#    ansible_user: root
-#  hosts:
-#    ubuntu20:
-#      ansible_host: 192.168.64.18
 server:
   vars:
     ansible_user: root

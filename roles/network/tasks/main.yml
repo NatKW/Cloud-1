@@ -1,31 +1,27 @@
 ---
-
-- name: Deny trafic in
-  ufw:
+- name: Deny traffic IN
+  ufw: 
+    default: deny
     direction: incoming
-    policy: deny
 
-- name: Allow trafic out
-  ufw:
+- name: Allow traffic OUT
+  ufw: 
+    default: allow
     direction: outgoing
-    policy: allow
 
 - name: Allow Ports
-  ufw:
+  ufw: 
     rule: allow
-    port: '{{ item }}'
-    proto: tcp
-  loop:
-    - '80'
-    - 'ssh'
-    - '9000'
-    - '8888'
-    - '3306'
-    - '443'
+    port: "{ item }"
+  loop: 
+  - '80'
+  - 'ssh'
+  - '9000'
+  - '9001'
+  - '3306'
+  - '443'
 
 - name: Enable UFW
   ufw:
     state: enabled
-
-...
-    
+...    

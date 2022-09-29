@@ -33,5 +33,4 @@
 - name: Clean unwanted older stuff
   apt:
     autoremove: yes
-    purge: yes
-...    
+    purge: yes    

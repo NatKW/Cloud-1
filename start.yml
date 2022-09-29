@@ -10,14 +10,14 @@
     - role: install
       tags:
         - install 
-        - setup
+    #    - setup
     - role: docker
       tags:
         - docker
-    - role: network
-      tags:
-        - network
-        - setup
+    #- role: network
+    #  tags:
+    #    - network
+    #    - setup
     - role: database
       tags:
         - db

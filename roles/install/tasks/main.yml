@@ -1,15 +1,9 @@
 --- 
 - name: Install tools
   apt: 
-    name: "{{ item }}"
+    name: ['git', 'wget', 'curl', 'aptitude', 'lsb-release']
     state: present
     update_cache: yes
-  with_items:
-    - git
-    - wget
-    - curl
-    - aptitude
-    - lsb-release
 
 - name: Add docker prerequisites
   apt:
